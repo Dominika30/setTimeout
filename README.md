@@ -1,2 +1,94 @@
-# setTimeout
-setTimeout and setInterval
+<!DOCTYPE HTML>
+<html>
+<head>	
+<link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<input type="text" id="poczatkowaWartosc">
+<input type="button" value="Włącz" id="przyciskOdpalStoper"/>
+<input type="button" value="Zatrzymaj" id="przyciskZatrzymajStoper"/>
+<input type="button" value="Kontynuuj" id="przyciskKontunuujStoper"/>
+<div id="uchwytStopera"></div>
+
+<script type="text/javascript">
+var timeOutStoper;
+
+function stopwatch(uchwytStopera,liczba)
+{
+	uchwytStopera.innerHTML = liczba--;
+	
+	if(liczba < 0)
+		return;
+	timeOutStoper = setTimeout(function()
+	{
+		stopwatch(uchwytStopera, liczba);
+	},1000);
+}
+
+function Stopwatch(uchwytStopera)
+{
+	this.uchwytStopera = uchwytStopera;
+	this.poczatkowaWartosc;
+	this.timeOutRef = undefined;
+	this.odpal = function(poczatkowaWartosc)
+	{
+		this.poczatkowaWartosc = poczatkowaWartosc;
+		if(this.timeOutRef)
+			this.zatrzymaj();
+		
+		
+		this.startStoper();
+	};
+	this.startStoper = function()
+	{
+		if(this.poczatkowaWartosc < 0)
+			return;
+		this.uchwytStopera.innerHTML = this.poczatkowaWartosc--;
+		
+		var self = this;
+		this.timeOutRef = setTimeout(function()
+		{
+			self.startStoper();
+		},1000);
+	};
+	this.zatrzymaj = function()
+	{
+		clearTimeout(this.timeOutRef);
+	};	
+	this.kontynuuj = function()
+	{
+		this.startStoper();
+	};
+}
+window.onload = function()
+{
+	
+	var przyciskOdpalStoper = document.getElementById("przyciskOdpalStoper");
+	var przyciskZatrzymajStoper = document.getElementById("przyciskZatrzymajStoper");
+	var przyciskKontunuujStoper = document.getElementById("przyciskKontunuujStoper");
+
+	var uchwytStopera = document.getElementById("uchwytStopera");
+	
+	var stoper = new Stopwatch(uchwytStopera);
+	
+	przyciskOdpalStoper.onclick = function()
+	{
+		var poczatkowaWartosc = document.getElementById("poczatkowaWartosc").value;
+		stoper.odpal(poczatkowaWartosc);
+	};
+	
+	przyciskZatrzymajStoper.onclick = function()
+	{
+		stoper.zatrzymaj();
+	};
+	przyciskKontunuujStoper.onclick = function()
+	{
+		stoper.kontynuuj();
+	};		
+};
+
+</script>
+</body>
+</html>
+
